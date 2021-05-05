@@ -11,6 +11,7 @@ targets:
         generate_for:
           include:
             - lib/models/**.dart
+            - lib/app_router.dart
         options:
           any_map: true
           explicit_to_json: true

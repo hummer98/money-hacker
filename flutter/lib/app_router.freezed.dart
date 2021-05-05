@@ -12,18 +12,6 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
-AppPage _$AppPageFromJson(Map<String, dynamic> json) {
-  switch (json['runtimeType'] as String) {
-    case 'top':
-      return _Top.fromJson(json);
-    case 'furusato':
-      return _Furusato.fromJson(json);
-
-    default:
-      throw FallThroughError();
-  }
-}
-
 /// @nodoc
 class _$AppPageTearOff {
   const _$AppPageTearOff();
@@ -34,10 +22,6 @@ class _$AppPageTearOff {
 
   _Furusato furusato() {
     return const _Furusato();
-  }
-
-  AppPage fromJson(Map<String, Object> json) {
-    return AppPage.fromJson(json);
   }
 }
 
@@ -72,7 +56,6 @@ mixin _$AppPage {
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -107,11 +90,9 @@ class __$TopCopyWithImpl<$Res> extends _$AppPageCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
 class _$_Top with DiagnosticableTreeMixin implements _Top {
   const _$_Top();
-
-  factory _$_Top.fromJson(Map<String, dynamic> json) => _$_$_TopFromJson(json);
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -175,17 +156,10 @@ class _$_Top with DiagnosticableTreeMixin implements _Top {
     }
     return orElse();
   }
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$_$_TopToJson(this)..['runtimeType'] = 'top';
-  }
 }
 
 abstract class _Top implements AppPage {
   const factory _Top() = _$_Top;
-
-  factory _Top.fromJson(Map<String, dynamic> json) = _$_Top.fromJson;
 }
 
 /// @nodoc
@@ -205,12 +179,9 @@ class __$FurusatoCopyWithImpl<$Res> extends _$AppPageCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
 class _$_Furusato with DiagnosticableTreeMixin implements _Furusato {
   const _$_Furusato();
-
-  factory _$_Furusato.fromJson(Map<String, dynamic> json) =>
-      _$_$_FurusatoFromJson(json);
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -274,15 +245,8 @@ class _$_Furusato with DiagnosticableTreeMixin implements _Furusato {
     }
     return orElse();
   }
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$_$_FurusatoToJson(this)..['runtimeType'] = 'furusato';
-  }
 }
 
 abstract class _Furusato implements AppPage {
   const factory _Furusato() = _$_Furusato;
-
-  factory _Furusato.fromJson(Map<String, dynamic> json) = _$_Furusato.fromJson;
 }
