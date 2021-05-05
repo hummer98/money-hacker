@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'MONEY HACKER',
       theme: theme,
+      initialRoute: '/',
       onGenerateRoute: AppRouter.onGenerateRoute,
     );
   }
