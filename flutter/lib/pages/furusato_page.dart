@@ -1,56 +1,80 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:money_hacker/app_router.dart';
+import 'package:money_hacker/models/furusato_page_state.dart';
 import 'package:money_hacker/models/income_tax.dart';
 import 'package:money_hacker/pages/common/app_scaffold.dart';
-import 'package:money_hacker/services/hometown_tax_service.dart';
+import 'package:money_hacker/utils/currency_value_accessor.dart';
 import 'package:money_hacker/widgets/text_widgets.dart';
 import 'package:pattern_formatter/pattern_formatter.dart';
 import 'package:reactive_forms/reactive_forms.dart';
+import 'package:uri/uri.dart';
 
-class FurusatoPage extends StatelessWidget {
-  final _formKey = GlobalKey<FormState>();
+class FurusatoRoutePath with RoutePath {
+  FurusatoRoutePath({this.id});
 
-  final form = FormGroup({
-    'incomeTaxRate': FormControl<int>(value: 0),
-    'residentTaxAmount': FormControl<int>(
-      value: 0,
-      // TODO: number
-      //  _formatのValidatorが必要
-      validators: [Validators.required],
-    ),
-    'limitOfHometownTaxAmount': FormControl<int>(value: 0),
-  });
+  final String? id;
+
+  factory FurusatoRoutePath.fromJson(Map<String, dynamic> data) {
+    return FurusatoRoutePath(id: data['id']);
+  }
+
+  @override
+  Map<String, dynamic> toArgument() => {'id': id};
+
+  @override
+  RouteSettings get routeSettings => RouteSettings(name: UriTemplate('/furusato/{id}').expand(toArgument()));
+
+  @override
+  Widget generate() => FurusatoPage();
+}
+
+class FurusatoPage extends HookWidget {
+  FurusatoPage({Key? key, this.state = const FurusatoPageState()})
+      : form = _generateFormGroup(state),
+        super(key: key);
+
+  final FormGroup form;
+
+  final FurusatoPageState state;
+
+  static FormGroup _generateFormGroup(FurusatoPageState state) {
+    return FormGroup({
+      'incomeTaxRate': FormControl<int>(
+        value: state.incomeTaxRate,
+      ),
+      'residentTaxAmount': FormControl<num>(
+        value: state.residentTaxAmount,
+        validators: [Validators.number, Validators.required],
+      ),
+      'limitOfHometownTaxAmount': FormControl<int>(
+        value: state.limitOfHometownTaxAmount,
+      ),
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    useEffect(() {
+      form.valueChanges.listen((e) {
+        final state = FurusatoPageState.fromJson(e!);
+        form.control('limitOfHometownTaxAmount').updateValue(state.limitOfHometownTaxAmount);
+      });
+    }, []);
+
     return AppScaffold(
       child: ReactiveForm(
         formGroup: form,
-        key: _formKey,
         child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
               Headline1('ふるさと納税'),
               _inputRow(label: '所得税率', child: _incomeTaxField(context, 'incomeTaxRate'), inputWidth: 100),
               _inputRow(label: '住民税均等割額', child: _residentTaxAmountField('residentTaxAmount')),
               SizedBox(height: 64),
-              _inputRow(
-                label: 'ふるさと納税限度額',
-                child: StreamBuilder<dynamic>(
-                    stream: form.valueChanges,
-                    builder: (context, snapshot) {
-                      debugPrint('rebuild! $snapshot');
-                      if (!form.valid) {
-                        return Text('-');
-                      }
-                      final incomeTaxRate = form.value['incomeTaxRate'] as int;
-                      final residentTaxAmount = form.value['residentTaxAmount'] as int;
-                      final l = HometownTaxService.limitOfHometownTaxAmount(incomeTaxRate, residentTaxAmount);
-                      return Text('${NumberFormat('#,##0', 'ja_JP').format(l)}');
-                    }),
-              ),
+              _inputRow(label: 'ふるさと納税限度額', child: _buildLimit('limitOfHometownTaxAmount')),
             ],
           ),
         ),
@@ -72,16 +96,15 @@ class FurusatoPage extends StatelessWidget {
   }
 
   Widget _residentTaxAmountField(String name) {
-    return ReactiveTextField<int>(
+    return ReactiveTextField<num>(
       formControlName: name,
       textAlign: TextAlign.end,
-      // TODO
-      valueAccessor: IntValueAccessor(),
-      // inputFormatters: [ThousandsFormatter()],
+      valueAccessor: CurrencyValueAccessor(),
+      inputFormatters: [ThousandsFormatter()],
       decoration: InputDecoration(
         isDense: true,
         border: const OutlineInputBorder(),
-        hintText: '住民税均等割額',
+        hintText: '住民税所得割額',
         suffix: UnitLabel('円'),
       ),
     );
@@ -90,17 +113,34 @@ class FurusatoPage extends StatelessWidget {
   Widget _incomeTaxField(BuildContext context, String name) {
     return ReactiveDropdownField<int>(
       formControlName: name,
+      isExpanded: true,
       decoration: InputDecoration(
         isDense: true,
         border: const OutlineInputBorder(),
         hintText: '所得税率',
+        suffix: UnitLabel('%'),
       ),
       items: IncomeTax.rates
-          .map((i) => DropdownMenuItem(
-                value: i.rate,
-                child: Text('${i.rate}%', textAlign: TextAlign.end),
-              ))
+          .map(
+            (i) => DropdownMenuItem(
+              value: i.rate,
+              child: Align(alignment: Alignment.centerRight, child: Text('${i.rate}')),
+            ),
+          )
           .toList(),
+    );
+  }
+
+  Widget _buildLimit(String name) {
+    return ReactiveTextField(
+      formControlName: name,
+      textAlign: TextAlign.end,
+      valueAccessor: CurrencyValueAccessor(),
+      decoration: InputDecoration(
+        isDense: true,
+        border: const OutlineInputBorder(),
+        suffix: UnitLabel('円'),
+      ),
     );
   }
 }

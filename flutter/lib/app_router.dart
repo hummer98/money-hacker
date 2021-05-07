@@ -1,72 +1,91 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:money_hacker/pages/furusato_page.dart';
+import 'package:money_hacker/pages/tax_exempted_compare_page.dart';
 import 'package:money_hacker/pages/top_page.dart';
 import 'package:money_hacker/pages/user_page.dart';
-
-part 'app_router.freezed.dart';
-
-class UserPagePath {
-  const UserPagePath(this.uid);
-
-  final String uid;
-}
-
-@freezed
-class AppPage with _$AppPage {
-  const factory AppPage.top([@Default('/') String name]) = _Top;
-  const factory AppPage.furusato([@Default('/furusato') String name]) = _Furusato;
-  const factory AppPage.user(UserPagePath path, [@Default('/user') String name]) = _User;
-}
-
-extension AppPageExtension on AppPage {
-  static Widget pages(AppPage appPage) {
-    return appPage.map(
-      top: (_) => TopPage(),
-      furusato: (_) => FurusatoPage(),
-      user: (_user) => UserPage(uid: _user.path.uid),
-    );
-  }
-
-  RouteSettings get routeSettings {
-    // TODO: maybeWhenでdefaultパーサーを使う
-    return maybeMap(
-      user: (_user) => RouteSettings(name: '/user', arguments: _user),
-      orElse: () => RouteSettings(name: name),
-    );
-  }
-
-  static AppPage byRoute(RouteSettings settings) {
-    // TODO: PATHINFOの場合 URIを適切にname & argumentsにパースする何か
-    if (settings.name == '/') {
-      return AppPage.top();
-    }
-    if (settings.name == '/furusato') {
-      return AppPage.furusato();
-    }
-    if (settings.name == '/user') {
-      return AppPage.user(settings.arguments as UserPagePath);
-    }
-    throw Exception(); // 404 Not Found?
-  }
-}
+import 'package:uri/uri.dart';
 
 extension AppNavigator on Navigator {
-  static Future pushPage(BuildContext context, {required AppPage appPage}) {
-    return Navigator.push(context, AppRouter.byAppPage(appPage));
+  static Future<T?> pushPath<T>(BuildContext context, {required RoutePath path}) {
+    return Navigator.push(context, path.route<T>());
   }
 }
 
 class AppRouter {
-  static Route onGenerateRoute(RouteSettings routeSettings) {
-    final appPage = AppPageExtension.byRoute(routeSettings);
-    return byAppPage(appPage);
+  // RouteSettings -> Route
+
+  static RoutePath parse(String name) {
+    final templates = <String, RoutePath Function(Map<String, dynamic>)>{
+      '/user/{uid}': (data) => UserRoutePath(data['uid']),
+      '/furusato/{id}': (data) => FurusatoRoutePath.fromJson(data),
+      '/furusato': (data) => FurusatoRoutePath.fromJson(data),
+      '/taxExemptedCompare/{id}': (data) => TaxExemptedCompareRoutePath(id: data['id']),
+      '/taxExemptedCompare': (data) => TaxExemptedCompareRoutePath(),
+      '/': (_) => TopRoutePath(),
+    };
+
+    final pair = templates.entries.firstWhereOrNull((templates) => match(templates.key, name));
+    if (pair == null) {
+      throw Exception(); // 404 Not Found
+    }
+    return pair.value(params(pair.key, name));
   }
 
-  static Route<T> byAppPage<T>(AppPage appPage) {
-    final page = AppPageExtension.pages(appPage);
-    // routeSettingsを書き換えたいときはAppPage.routeSettingsをオーバーライドすれば良い
-    return PageRouteBuilder<T>(pageBuilder: (_, __, ___) => page, settings: appPage.routeSettings);
+  static Route onGenerateRoute(RouteSettings routeSettings) {
+    return parse(routeSettings.name!).route();
+  }
+
+  static bool match(String template, String uriString) {
+    final uri = Uri.parse(uriString);
+    final parser = UriParser(UriTemplate(template));
+    return parser.matches(uri);
+  }
+
+  static Map<String, String?> params(String template, String uriString) {
+    final uri = Uri.parse(uriString);
+    final parser = UriParser(UriTemplate(template));
+    final match = parser.match(uri);
+    return match!.parameters;
   }
 }
+
+// やりたきこと
+// * URIをRoute<T>にしたい
+//   Route<T> onGenerateRoute(RouteSettings)
+// PATHINFO -> RouteSettingsで来るので, Route<T> onGenerateRoute(RouteSettings)
+// PathInfoParserは一箇所に集約する(探索順序がわかりやすいように)
+// * Typed Navigationしたい
+//   Future<T?> pushPage<T>(AppPage)
+// * AppPageをRouteにしたい -> AppPageをRouteSettings.name & argumentsにしたい
+//   Route<T> AppPage.route()
+
+/// RouteSettings -> RoutePathはAppRouteの責務
+mixin RoutePath {
+  RouteSettings get routeSettings;
+
+  Widget generate();
+
+  Map<String, dynamic> toArgument();
+
+  Route<T> route<T>() {
+    return PageRouteBuilder<T>(pageBuilder: (_, __, ___) => generate(), settings: routeSettings);
+  }
+}
+
+// class DynamicRoutePath with RoutePath {
+//   DynamicRoutePath({required this.name, required this.generate});
+//
+//   final Widget Function() generate;
+//
+//   final String name;
+//
+//   @override
+//   Widget _generate() {
+//     return generate();
+//   }
+//
+//   @override
+//   // TODO: implement routeSettings
+//   RouteSettings get routeSettings => throw UnimplementedError();
+// }

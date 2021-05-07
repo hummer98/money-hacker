@@ -49,6 +49,7 @@ class IncomeTaxRate {
 }
 
 class IncomeTax {
+  /// 所得税
   static int taxAmount(int taxableIncome) {
     if (taxableIncome < 0) {
       return 0;
@@ -61,6 +62,7 @@ class IncomeTax {
     throw Exception();
   }
 
+  /// 復興特別税込みの所得税
   static int taxAmountWithSpecial(int taxableIncome) {
     if (taxableIncome < 0) {
       return 0;
@@ -73,6 +75,12 @@ class IncomeTax {
     throw Exception();
   }
 
+  /// 所得税率
+  static IncomeTaxRate withIncome(int income) {
+    return rates.firstWhereOrNull((element) => element.match(income))!;
+  }
+
+  ///
   static IncomeTaxRate? withTaxRate(int taxRate) {
     return rates.firstWhereOrNull((e) => e.rate == taxRate);
   }
