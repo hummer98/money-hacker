@@ -24,7 +24,7 @@ jobs:
       - run: |
           flutter config --enable-web
           flutter pub get
-          flutter build web
+          flutter build web --web-renderer html
         working-directory: ${{ env.PROCJECT_SOURCE_PATH }}
       # - name: Install dependencies
       #   run: npm install
