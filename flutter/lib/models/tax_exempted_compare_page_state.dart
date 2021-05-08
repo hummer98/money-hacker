@@ -16,6 +16,7 @@ class TaxExemptedComparePageState with _$TaxExemptedComparePageState {
     /// 税込み収入
     @Default(7000000) int taxIncludedIncome,
     @Default(0) int taxIncludedExpenses,
+    @Default(35) int age,
   }) = _TaxExemptedComparePageState;
 
   factory TaxExemptedComparePageState.fromJson(Map<String, dynamic> json) =>
@@ -28,6 +29,7 @@ class TaxExemptedComparePageState with _$TaxExemptedComparePageState {
       });
 }
 
+/// FIXME: 自動計算はプロパティでなくJSONにしたほうが良い
 extension TaxExemptedComparePageStateExtension on TaxExemptedComparePageState {
   /// 基礎控除
   int get baseRemoval => 480000;

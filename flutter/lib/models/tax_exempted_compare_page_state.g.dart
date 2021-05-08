@@ -12,6 +12,7 @@ _$_TaxExemptedComparePageState _$_$_TaxExemptedComparePageStateFromJson(
     id: json['id'] as String?,
     taxIncludedIncome: json['taxIncludedIncome'] as int? ?? 7000000,
     taxIncludedExpenses: json['taxIncludedExpenses'] as int? ?? 0,
+    age: json['age'] as int? ?? 35,
   );
 }
 
@@ -21,4 +22,5 @@ Map<String, dynamic> _$_$_TaxExemptedComparePageStateToJson(
       'id': instance.id,
       'taxIncludedIncome': instance.taxIncludedIncome,
       'taxIncludedExpenses': instance.taxIncludedExpenses,
+      'age': instance.age,
     };

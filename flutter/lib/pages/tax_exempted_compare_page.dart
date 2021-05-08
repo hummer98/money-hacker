@@ -65,7 +65,10 @@ class TaxExemptedCompareForm extends HookWidget {
 
   final TaxExemptedComparePageState state;
 
+  final double _defaultWidth = 160;
+
   static FormGroup _generateFormGroup(TaxExemptedComparePageState state) {
+    // FIXME: 自動計算セクションは計算サービスのJSONから作るほうが早い?
     return FormGroup({
       'taxIncludedIncome': FormControl<int>(
         value: state.taxIncludedIncome,
@@ -75,6 +78,11 @@ class TaxExemptedCompareForm extends HookWidget {
         value: state.taxIncludedExpenses,
         validators: [Validators.number, Validators.required],
       ),
+      'age': FormControl<int>(
+        value: state.age,
+        validators: [Validators.number, Validators.required],
+      ),
+
       'baseRemoval': FormControl<int>(value: state.baseRemoval),
 
       /// 課税事業者
@@ -107,7 +115,6 @@ class TaxExemptedCompareForm extends HookWidget {
       'exNetIncome': FormControl<int>(value: state.exNetIncome),
 
       'exTotalTax': FormControl<int>(value: state.exTotalTax),
-      'totalTaxDiff': FormControl<int>(value: state.totalTaxDiff),
       'netIncomeDiff': FormControl<int>(value: state.netIncomeDiff),
     });
   }
@@ -141,7 +148,6 @@ class TaxExemptedCompareForm extends HookWidget {
         _form.control('vatRate').updateValue(state.vatRate);
         _form.control('vatPaid').updateValue(state.vatPaid);
         _form.control('vatIncome').updateValue(state.vatIncome);
-        _form.control('totalTaxDiff').updateValue(state.totalTaxDiff);
         _form.control('netIncomeDiff').updateValue(state.netIncomeDiff);
       });
     }, []);
@@ -153,9 +159,14 @@ class TaxExemptedCompareForm extends HookWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Headline1('免税事業者 と 課税事業者比較'),
+            Center(
+                child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Headline1('免税事業者 と 課税事業者比較'),
+            )),
             _inputRow(label: '税込み収入', child: _buildCurrencyTextField('taxIncludedIncome')),
             _inputRow(label: '税込み経費', child: _buildCurrencyTextField('taxIncludedExpenses')),
+            _inputRow(label: '年齢', child: _buildCurrencyTextField('age', unitLabel: '歳'), inputWidth: 80),
             _inputRow(label: '基礎控除', child: _buildCurrencyTextField('baseRemoval', readOnly: true)),
             SizedBox(height: 32),
             Row(
@@ -168,14 +179,9 @@ class TaxExemptedCompareForm extends HookWidget {
             ),
             SizedBox(height: 64),
             _inputRow(
-              label: '税額差額',
-              child: _buildCurrencyTextField('totalTaxDiff', readOnly: true),
-              inputWidth: 140,
-            ),
-            _inputRow(
               label: '手取り差額',
               child: _buildCurrencyTextField('netIncomeDiff', readOnly: true),
-              inputWidth: 140,
+              inputWidth: _defaultWidth,
             ),
           ],
         ),
@@ -188,22 +194,29 @@ class TaxExemptedCompareForm extends HookWidget {
       children: [
         Headline5('免税事業者'),
         SizedBox(height: 8),
-        _inputRow(label: '所得', child: _buildCurrencyTextField('ex-income', readOnly: true), inputWidth: 140),
-        _inputRow(label: '課税所得', child: _buildCurrencyTextField('exTaxableIncome', readOnly: true), inputWidth: 140),
+        _inputRow(label: '所得', child: _buildCurrencyTextField('ex-income', readOnly: true), inputWidth: _defaultWidth),
+        _inputRow(
+            label: '課税所得',
+            child: _buildCurrencyTextField('exTaxableIncome', readOnly: true),
+            inputWidth: _defaultWidth),
         _inputRow(
             label: '所得税率',
             child: _buildCurrencyTextField('ex-incomeTaxRate', readOnly: true, unitLabel: '%'),
-            inputWidth: 140),
-        _inputRow(label: '所得税', child: _buildCurrencyTextField('exIncomeTax', readOnly: true), inputWidth: 140),
-        _inputRow(label: '住民税', child: _buildCurrencyTextField('ex-residentTax', readOnly: true), inputWidth: 140),
+            inputWidth: _defaultWidth),
+        _inputRow(
+            label: '所得税', child: _buildCurrencyTextField('exIncomeTax', readOnly: true), inputWidth: _defaultWidth),
+        _inputRow(
+            label: '住民税', child: _buildCurrencyTextField('ex-residentTax', readOnly: true), inputWidth: _defaultWidth),
         _inputRow(
             label: '国民健康保険税',
             child: _buildCurrencyTextField('ex-nationalHealthInsuranceTax', readOnly: true),
-            inputWidth: 140),
+            inputWidth: _defaultWidth),
         SizedBox(height: 48),
         SizedBox(height: 32),
-        _inputRow(label: '租税合計', child: _buildCurrencyTextField('exTotalTax', readOnly: true), inputWidth: 140),
-        _inputRow(label: '手取り額', child: _buildCurrencyTextField('exNetIncome', readOnly: true), inputWidth: 140),
+        _inputRow(
+            label: '租税合計', child: _buildCurrencyTextField('exTotalTax', readOnly: true), inputWidth: _defaultWidth),
+        _inputRow(
+            label: '手取り額', child: _buildCurrencyTextField('exNetIncome', readOnly: true), inputWidth: _defaultWidth),
       ],
     );
   }
@@ -213,23 +226,27 @@ class TaxExemptedCompareForm extends HookWidget {
       children: [
         Headline5('課税事業者'),
         SizedBox(height: 8),
-        _inputRow(label: '所得', child: _buildCurrencyTextField('income', readOnly: true), inputWidth: 140),
-        _inputRow(label: '課税所得', child: _buildCurrencyTextField('taxableIncome', readOnly: true), inputWidth: 140),
+        _inputRow(label: '所得', child: _buildCurrencyTextField('income', readOnly: true), inputWidth: _defaultWidth),
+        _inputRow(
+            label: '課税所得', child: _buildCurrencyTextField('taxableIncome', readOnly: true), inputWidth: _defaultWidth),
         _inputRow(
             label: '所得税率',
             child: _buildCurrencyTextField('incomeTaxRate', readOnly: true, unitLabel: '%'),
-            inputWidth: 140),
-        _inputRow(label: '所得税', child: _buildCurrencyTextField('incomeTax', readOnly: true), inputWidth: 140),
-        _inputRow(label: '住民税', child: _buildCurrencyTextField('residentTax', readOnly: true), inputWidth: 140),
+            inputWidth: _defaultWidth),
+        _inputRow(label: '所得税', child: _buildCurrencyTextField('incomeTax', readOnly: true), inputWidth: _defaultWidth),
+        _inputRow(
+            label: '住民税', child: _buildCurrencyTextField('residentTax', readOnly: true), inputWidth: _defaultWidth),
         _inputRow(
             label: '国民健康保険税',
             child: _buildCurrencyTextField('nationalHealthInsuranceTax', readOnly: true),
-            inputWidth: 140),
-        _inputRow(label: '消費税支払額', child: _buildCurrencyTextField('vatPaid', readOnly: true), inputWidth: 140),
+            inputWidth: _defaultWidth),
+        _inputRow(
+            label: '消費税支払額', child: _buildCurrencyTextField('vatPaid', readOnly: true), inputWidth: _defaultWidth),
         SizedBox(height: 32),
-        _inputRow(label: '租税合計', child: _buildCurrencyTextField('totalTax', readOnly: true), inputWidth: 140),
-        // _inputRow(label: '消費税益税', child: _buildCurrencyTextField('vatIncome', readOnly: true), inputWidth: 140),
-        _inputRow(label: '手取り額', child: _buildCurrencyTextField('netIncome', readOnly: true), inputWidth: 140),
+        _inputRow(label: '租税合計', child: _buildCurrencyTextField('totalTax', readOnly: true), inputWidth: _defaultWidth),
+        // _inputRow(label: '消費税益税', child: _buildCurrencyTextField('vatIncome', readOnly: true), inputWidth: _defaultWidth),
+        _inputRow(
+            label: '手取り額', child: _buildCurrencyTextField('netIncome', readOnly: true), inputWidth: _defaultWidth),
       ],
     );
   }

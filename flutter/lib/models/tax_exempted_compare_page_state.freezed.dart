@@ -24,11 +24,13 @@ class _$TaxExemptedComparePageStateTearOff {
   _TaxExemptedComparePageState call(
       {String? id,
       int taxIncludedIncome = 7000000,
-      int taxIncludedExpenses = 0}) {
+      int taxIncludedExpenses = 0,
+      int age = 35}) {
     return _TaxExemptedComparePageState(
       id: id,
       taxIncludedIncome: taxIncludedIncome,
       taxIncludedExpenses: taxIncludedExpenses,
+      age: age,
     );
   }
 
@@ -47,6 +49,7 @@ mixin _$TaxExemptedComparePageState {
   /// 税込み収入
   int get taxIncludedIncome => throw _privateConstructorUsedError;
   int get taxIncludedExpenses => throw _privateConstructorUsedError;
+  int get age => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -60,7 +63,8 @@ abstract class $TaxExemptedComparePageStateCopyWith<$Res> {
           TaxExemptedComparePageState value,
           $Res Function(TaxExemptedComparePageState) then) =
       _$TaxExemptedComparePageStateCopyWithImpl<$Res>;
-  $Res call({String? id, int taxIncludedIncome, int taxIncludedExpenses});
+  $Res call(
+      {String? id, int taxIncludedIncome, int taxIncludedExpenses, int age});
 }
 
 /// @nodoc
@@ -77,6 +81,7 @@ class _$TaxExemptedComparePageStateCopyWithImpl<$Res>
     Object? id = freezed,
     Object? taxIncludedIncome = freezed,
     Object? taxIncludedExpenses = freezed,
+    Object? age = freezed,
   }) {
     return _then(_value.copyWith(
       id: id == freezed
@@ -91,6 +96,10 @@ class _$TaxExemptedComparePageStateCopyWithImpl<$Res>
           ? _value.taxIncludedExpenses
           : taxIncludedExpenses // ignore: cast_nullable_to_non_nullable
               as int,
+      age: age == freezed
+          ? _value.age
+          : age // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -103,7 +112,8 @@ abstract class _$TaxExemptedComparePageStateCopyWith<$Res>
           $Res Function(_TaxExemptedComparePageState) then) =
       __$TaxExemptedComparePageStateCopyWithImpl<$Res>;
   @override
-  $Res call({String? id, int taxIncludedIncome, int taxIncludedExpenses});
+  $Res call(
+      {String? id, int taxIncludedIncome, int taxIncludedExpenses, int age});
 }
 
 /// @nodoc
@@ -124,6 +134,7 @@ class __$TaxExemptedComparePageStateCopyWithImpl<$Res>
     Object? id = freezed,
     Object? taxIncludedIncome = freezed,
     Object? taxIncludedExpenses = freezed,
+    Object? age = freezed,
   }) {
     return _then(_TaxExemptedComparePageState(
       id: id == freezed
@@ -138,6 +149,10 @@ class __$TaxExemptedComparePageStateCopyWithImpl<$Res>
           ? _value.taxIncludedExpenses
           : taxIncludedExpenses // ignore: cast_nullable_to_non_nullable
               as int,
+      age: age == freezed
+          ? _value.age
+          : age // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -150,7 +165,8 @@ class _$_TaxExemptedComparePageState
   const _$_TaxExemptedComparePageState(
       {this.id,
       this.taxIncludedIncome = 7000000,
-      this.taxIncludedExpenses = 0});
+      this.taxIncludedExpenses = 0,
+      this.age = 35});
 
   factory _$_TaxExemptedComparePageState.fromJson(Map<String, dynamic> json) =>
       _$_$_TaxExemptedComparePageStateFromJson(json);
@@ -165,10 +181,13 @@ class _$_TaxExemptedComparePageState
   @JsonKey(defaultValue: 0)
   @override
   final int taxIncludedExpenses;
+  @JsonKey(defaultValue: 35)
+  @override
+  final int age;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'TaxExemptedComparePageState(id: $id, taxIncludedIncome: $taxIncludedIncome, taxIncludedExpenses: $taxIncludedExpenses)';
+    return 'TaxExemptedComparePageState(id: $id, taxIncludedIncome: $taxIncludedIncome, taxIncludedExpenses: $taxIncludedExpenses, age: $age)';
   }
 
   @override
@@ -178,7 +197,8 @@ class _$_TaxExemptedComparePageState
       ..add(DiagnosticsProperty('type', 'TaxExemptedComparePageState'))
       ..add(DiagnosticsProperty('id', id))
       ..add(DiagnosticsProperty('taxIncludedIncome', taxIncludedIncome))
-      ..add(DiagnosticsProperty('taxIncludedExpenses', taxIncludedExpenses));
+      ..add(DiagnosticsProperty('taxIncludedExpenses', taxIncludedExpenses))
+      ..add(DiagnosticsProperty('age', age));
   }
 
   @override
@@ -192,7 +212,9 @@ class _$_TaxExemptedComparePageState
                     .equals(other.taxIncludedIncome, taxIncludedIncome)) &&
             (identical(other.taxIncludedExpenses, taxIncludedExpenses) ||
                 const DeepCollectionEquality()
-                    .equals(other.taxIncludedExpenses, taxIncludedExpenses)));
+                    .equals(other.taxIncludedExpenses, taxIncludedExpenses)) &&
+            (identical(other.age, age) ||
+                const DeepCollectionEquality().equals(other.age, age)));
   }
 
   @override
@@ -200,7 +222,8 @@ class _$_TaxExemptedComparePageState
       runtimeType.hashCode ^
       const DeepCollectionEquality().hash(id) ^
       const DeepCollectionEquality().hash(taxIncludedIncome) ^
-      const DeepCollectionEquality().hash(taxIncludedExpenses);
+      const DeepCollectionEquality().hash(taxIncludedExpenses) ^
+      const DeepCollectionEquality().hash(age);
 
   @JsonKey(ignore: true)
   @override
@@ -219,7 +242,8 @@ abstract class _TaxExemptedComparePageState
   const factory _TaxExemptedComparePageState(
       {String? id,
       int taxIncludedIncome,
-      int taxIncludedExpenses}) = _$_TaxExemptedComparePageState;
+      int taxIncludedExpenses,
+      int age}) = _$_TaxExemptedComparePageState;
 
   factory _TaxExemptedComparePageState.fromJson(Map<String, dynamic> json) =
       _$_TaxExemptedComparePageState.fromJson;
@@ -232,6 +256,8 @@ abstract class _TaxExemptedComparePageState
   int get taxIncludedIncome => throw _privateConstructorUsedError;
   @override
   int get taxIncludedExpenses => throw _privateConstructorUsedError;
+  @override
+  int get age => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$TaxExemptedComparePageStateCopyWith<_TaxExemptedComparePageState>
