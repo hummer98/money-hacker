@@ -32,7 +32,7 @@ jobs:
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
-          args: deploy --only hosting
+          args: deploy --only hosting, firestore
         env:
           PROJECT_ID: money-hacker
           PROJECT_PATH: ${{ env.FIREBASE_PROJECT_PATH }}
