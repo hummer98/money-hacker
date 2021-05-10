@@ -2,7 +2,7 @@ import 'dart:math';
 
 /// 地方自治体別の設定
 class LocalAuthority {
-  LocalAuthority(
+  const LocalAuthority(
     this.name, {
     required this.nationalHealthInsuranceData,
     this.updateYear,
@@ -15,7 +15,7 @@ class LocalAuthority {
 
 /// 国民健康保険料データ
 class NationalHealthInsuranceData {
-  NationalHealthInsuranceData({
+  const NationalHealthInsuranceData({
     required this.base,
     required this.support,
     required this.care,
@@ -27,7 +27,7 @@ class NationalHealthInsuranceData {
 
   /// 課税所得を元に国民健康保険税を算出する
   int amountOfTax(int taxableIncome, int age) {
-    if (age >= 40 && 65 < age) {
+    if (age >= 40 && 65 > age) {
       return base.amountOfTax(taxableIncome) + support.amountOfTax(taxableIncome) + care.amountOfTax(taxableIncome);
     } else {
       return base.amountOfTax(taxableIncome) + support.amountOfTax(taxableIncome);
@@ -35,7 +35,7 @@ class NationalHealthInsuranceData {
   }
 }
 
-final nakanoAuthority = LocalAuthority(
+const nakanoAuthority = LocalAuthority(
   '中野区',
   nationalHealthInsuranceData: NationalHealthInsuranceData(
     base: NationalHealthInsuranceSection(36600, 7.13, 630000),
@@ -47,7 +47,7 @@ final nakanoAuthority = LocalAuthority(
 
 /// 国民健康保険料区分毎データ
 class NationalHealthInsuranceSection {
-  NationalHealthInsuranceSection(this.capitation, this.incomeBasedLevyTaxRate, this.limit);
+  const NationalHealthInsuranceSection(this.capitation, this.incomeBasedLevyTaxRate, this.limit);
 
   /// 均等割額
   final int capitation;
@@ -59,13 +59,15 @@ class NationalHealthInsuranceSection {
   final int limit;
 
   int amountOfTax(int taxableIncome) {
-    return min(limit, (taxableIncome * incomeBasedLevyTaxRate + capitation).toInt());
+    return min(limit, (taxableIncome * incomeBasedLevyTaxRate * 0.01 + capitation).toInt());
   }
 }
 
 /// 国民健康保険料の計算クラス
 class NationalHealthInsuranceService {
-  final localAuthority = nakanoAuthority;
+  NationalHealthInsuranceService({this.localAuthority = nakanoAuthority});
+
+  final LocalAuthority localAuthority;
 
   int amountOfTax(int taxableIncome, int age) =>
       localAuthority.nationalHealthInsuranceData.amountOfTax(taxableIncome, age);

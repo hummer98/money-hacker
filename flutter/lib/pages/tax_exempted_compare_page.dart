@@ -78,12 +78,22 @@ class TaxExemptedCompareForm extends HookWidget {
         value: state.taxIncludedExpenses,
         validators: [Validators.number, Validators.required],
       ),
+      'otherRemoval': FormControl<int>(
+        value: state.otherRemoval,
+        validators: [Validators.number, Validators.required],
+      ),
+      'typeOfDeclaration': FormControl<TypeOfDeclaration>(
+        value: state.typeOfDeclaration,
+        validators: [Validators.required],
+      ),
       'age': FormControl<int>(
         value: state.age,
         validators: [Validators.number, Validators.required],
       ),
 
       'baseRemoval': FormControl<int>(value: state.baseRemoval),
+
+      'declarationRemoval': FormControl<int>(value: state.declarationRemoval),
 
       /// 課税事業者
 
@@ -94,7 +104,7 @@ class TaxExemptedCompareForm extends HookWidget {
         value: state.residentTax,
       ),
       'incomeTax': FormControl<int>(value: state.incomeTax),
-      'nationalHealthInsuranceTax': FormControl<int>(value: 0),
+      'nationalHealthInsuranceTax': FormControl<int>(value: state.nationalHealthInsuranceTax),
       'vatPaid': FormControl<int>(value: state.vatPaid),
       'vatRate': FormControl<int>(value: state.vatRate),
       'totalTax': FormControl<int>(value: state.totalTax),
@@ -111,7 +121,7 @@ class TaxExemptedCompareForm extends HookWidget {
         value: state.exResidentTax,
       ),
       'exIncomeTax': FormControl<int>(value: state.exIncomeTax),
-      'ex-nationalHealthInsuranceTax': FormControl<int>(value: 0),
+      'exNationalHealthInsuranceTax': FormControl<int>(value: state.exNationalHealthInsuranceTax),
       'exNetIncome': FormControl<int>(value: state.exNetIncome),
 
       'exTotalTax': FormControl<int>(value: state.exTotalTax),
@@ -139,6 +149,9 @@ class TaxExemptedCompareForm extends HookWidget {
         _form.control('incomeTax').updateValue(state.incomeTax);
         _form.control('exIncomeTax').updateValue(state.exIncomeTax);
 
+        _form.control('nationalHealthInsuranceTax').updateValue(state.nationalHealthInsuranceTax);
+        _form.control('exNationalHealthInsuranceTax').updateValue(state.exNationalHealthInsuranceTax);
+
         _form.control('totalTax').updateValue(state.totalTax);
         _form.control('exTotalTax').updateValue(state.exTotalTax);
 
@@ -164,22 +177,23 @@ class TaxExemptedCompareForm extends HookWidget {
               padding: const EdgeInsets.all(16.0),
               child: Headline1('免税事業者 と 課税事業者比較'),
             )),
-            _inputRow(label: '税込み収入', child: _buildCurrencyTextField('taxIncludedIncome')),
-            _inputRow(label: '税込み経費', child: _buildCurrencyTextField('taxIncludedExpenses')),
             _inputRow(label: '年齢', child: _buildCurrencyTextField('age', unitLabel: '歳'), inputWidth: 80),
-            _inputRow(label: '基礎控除', child: _buildCurrencyTextField('baseRemoval', readOnly: true)),
+            _inputRow(label: '税込事業収入', child: _buildCurrencyTextField('taxIncludedIncome')),
+            _inputRow(label: '税込経費', child: _buildCurrencyTextField('taxIncludedExpenses')),
+            _inputRow(label: 'その他控除', child: _buildCurrencyTextField('otherRemoval')),
+            _inputRow(label: '申告種別による控除', child: _buildCurrencyTextField('declarationRemoval', readOnly: true)),
             SizedBox(height: 32),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(child: _buildTaxable()),
-                SizedBox(width: 64),
                 Expanded(child: _buildTaxExempt()),
+                SizedBox(width: 64),
+                Expanded(child: _buildTaxable()),
               ],
             ),
             SizedBox(height: 64),
             _inputRow(
-              label: '手取り差額',
+              label: '課税所得者になったときの差額',
               child: _buildCurrencyTextField('netIncomeDiff', readOnly: true),
               inputWidth: _defaultWidth,
             ),
@@ -194,27 +208,46 @@ class TaxExemptedCompareForm extends HookWidget {
       children: [
         Headline5('免税事業者'),
         SizedBox(height: 8),
-        _inputRow(label: '所得', child: _buildCurrencyTextField('ex-income', readOnly: true), inputWidth: _defaultWidth),
+        _inputRow(
+            label: '所得',
+            child: _buildCurrencyTextField(
+              'ex-income',
+              readOnly: true,
+            ),
+            tooltip: '= 税込事業収入 - 税込経費 - 申告種別による控除',
+            inputWidth: _defaultWidth),
+        _inputRow(
+            label: '基礎控除', child: _buildCurrencyTextField('baseRemoval', readOnly: true), inputWidth: _defaultWidth),
         _inputRow(
             label: '課税所得',
             child: _buildCurrencyTextField('exTaxableIncome', readOnly: true),
             inputWidth: _defaultWidth),
+        SizedBox(height: 24),
         _inputRow(
-            label: '所得税率',
-            child: _buildCurrencyTextField('ex-incomeTaxRate', readOnly: true, unitLabel: '%'),
+            label: '所得税',
+            child: _buildCurrencyTextField(
+              'exIncomeTax',
+              readOnly: true,
+              prefix: ReactiveFormField<int, int>(
+                formControlName: 'incomeTaxRate',
+                builder: (state) => Tooltip(
+                  message: '所得税率',
+                  child: UnitLabel('${state.value}%'),
+                ),
+              ),
+            ),
             inputWidth: _defaultWidth),
-        _inputRow(
-            label: '所得税', child: _buildCurrencyTextField('exIncomeTax', readOnly: true), inputWidth: _defaultWidth),
         _inputRow(
             label: '住民税', child: _buildCurrencyTextField('ex-residentTax', readOnly: true), inputWidth: _defaultWidth),
         _inputRow(
             label: '国民健康保険税',
-            child: _buildCurrencyTextField('ex-nationalHealthInsuranceTax', readOnly: true),
+            child: _buildCurrencyTextField('exNationalHealthInsuranceTax', readOnly: true),
             inputWidth: _defaultWidth),
         SizedBox(height: 48),
-        SizedBox(height: 32),
+        SizedBox(height: 16),
         _inputRow(
             label: '租税合計', child: _buildCurrencyTextField('exTotalTax', readOnly: true), inputWidth: _defaultWidth),
+        SizedBox(height: 16),
         _inputRow(
             label: '手取り額', child: _buildCurrencyTextField('exNetIncome', readOnly: true), inputWidth: _defaultWidth),
       ],
@@ -226,14 +259,30 @@ class TaxExemptedCompareForm extends HookWidget {
       children: [
         Headline5('課税事業者'),
         SizedBox(height: 8),
-        _inputRow(label: '所得', child: _buildCurrencyTextField('income', readOnly: true), inputWidth: _defaultWidth),
+        _inputRow(
+            label: '所得',
+            child: _buildCurrencyTextField('income', readOnly: true),
+            tooltip: '= (税込事業収入 - 税込経費)/1.1 - 申告種別による控除\n消費税分を自動的に減算',
+            inputWidth: _defaultWidth),
+        _inputRow(
+            label: '基礎控除', child: _buildCurrencyTextField('baseRemoval', readOnly: true), inputWidth: _defaultWidth),
         _inputRow(
             label: '課税所得', child: _buildCurrencyTextField('taxableIncome', readOnly: true), inputWidth: _defaultWidth),
+        SizedBox(height: 24),
         _inputRow(
-            label: '所得税率',
-            child: _buildCurrencyTextField('incomeTaxRate', readOnly: true, unitLabel: '%'),
+            label: '所得税',
+            child: _buildCurrencyTextField(
+              'incomeTax',
+              readOnly: true,
+              prefix: ReactiveFormField<int, int>(
+                formControlName: 'incomeTaxRate',
+                builder: (state) => Tooltip(
+                  message: '所得税率',
+                  child: UnitLabel('${state.value}%'),
+                ),
+              ),
+            ),
             inputWidth: _defaultWidth),
-        _inputRow(label: '所得税', child: _buildCurrencyTextField('incomeTax', readOnly: true), inputWidth: _defaultWidth),
         _inputRow(
             label: '住民税', child: _buildCurrencyTextField('residentTax', readOnly: true), inputWidth: _defaultWidth),
         _inputRow(
@@ -241,20 +290,39 @@ class TaxExemptedCompareForm extends HookWidget {
             child: _buildCurrencyTextField('nationalHealthInsuranceTax', readOnly: true),
             inputWidth: _defaultWidth),
         _inputRow(
-            label: '消費税支払額', child: _buildCurrencyTextField('vatPaid', readOnly: true), inputWidth: _defaultWidth),
-        SizedBox(height: 32),
+            label: '消費税支払額',
+            child: _buildCurrencyTextField(
+              'vatPaid',
+              readOnly: true,
+              prefix: ReactiveFormField<int, int>(
+                formControlName: 'vatRate',
+                builder: (state) => Tooltip(
+                  message: '簡易課税率',
+                  child: UnitLabel('${state.value}%'),
+                ),
+              ),
+            ),
+            inputWidth: _defaultWidth),
+        SizedBox(height: 16),
         _inputRow(label: '租税合計', child: _buildCurrencyTextField('totalTax', readOnly: true), inputWidth: _defaultWidth),
         // _inputRow(label: '消費税益税', child: _buildCurrencyTextField('vatIncome', readOnly: true), inputWidth: _defaultWidth),
+        SizedBox(height: 16),
         _inputRow(
             label: '手取り額', child: _buildCurrencyTextField('netIncome', readOnly: true), inputWidth: _defaultWidth),
       ],
     );
   }
 
-  Widget _inputRow({required String label, required Widget child, double inputWidth = 200}) {
+  Widget _inputRow({required String label, required Widget child, double inputWidth = 200, String? tooltip}) {
     return Row(
       children: [
         Headline6(label),
+        if (tooltip != null)
+          Tooltip(
+            height: 40,
+            message: tooltip,
+            child: Icon(Icons.info, color: Colors.blueGrey),
+          ),
         Spacer(),
         Container(
           width: inputWidth,
@@ -264,7 +332,8 @@ class TaxExemptedCompareForm extends HookWidget {
     );
   }
 
-  Widget _buildCurrencyTextField(String name, {String? label, bool readOnly = false, String unitLabel = '円'}) {
+  Widget _buildCurrencyTextField(String name,
+      {String? label, bool readOnly = false, String unitLabel = '円', Widget? prefix}) {
     return ReactiveTextField<num>(
       formControlName: name,
       textAlign: TextAlign.end,
@@ -275,10 +344,30 @@ class TaxExemptedCompareForm extends HookWidget {
         isDense: true,
         border: const OutlineInputBorder(),
         hintText: label,
+        prefix: prefix,
         suffix: UnitLabel(unitLabel),
         fillColor: readOnly ? Color(0xFFBBBBBB) : Colors.white,
         filled: true,
       ),
+    );
+  }
+
+  Widget _declarationRemovalField(String name) {
+    return ReactiveDropdownField<int>(
+      formControlName: name,
+      isExpanded: true,
+      decoration: InputDecoration(
+        isDense: true,
+        border: const OutlineInputBorder(),
+      ),
+      items: IncomeTax.rates
+          .map(
+            (i) => DropdownMenuItem(
+              value: i.rate,
+              child: Align(alignment: Alignment.centerRight, child: Text('${i.rate}')),
+            ),
+          )
+          .toList(),
     );
   }
 }
