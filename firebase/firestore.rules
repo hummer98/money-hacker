@@ -1,0 +1,27 @@
+rules_version = '2';
+service cloud.firestore {
+  function isAuthenticatedUser() {
+      return request.auth != null;
+  }
+
+  function isSpecificUser(userId) {
+    return request.auth.uid == userId;
+  }
+
+  match /databases/{database}/documents {    
+    function validateKeys(keys) {
+      return keys.size() == 5
+        && 'taxIncludedIncome' in keys && keys.taxIncludedIncome is number
+        && 'taxIncludedExpenses' in keys && keys.taxIncludedExpenses is number
+        && 'otherRemoval' in keys && keys.otherRemoval is number
+        && 'age' in keys && keys.age is number
+        && 'typeOfDeclaration' in keys && keys.typeOfDeclaration is string;
+    }
+    
+    match /taxExemptedCompare/1/saved/{id} {
+      allow list, get: if isAuthenticatedUser();
+      allow create: if isAuthenticatedUser() && validateKeys(request.resource.data);
+    }
+
+  }
+}
