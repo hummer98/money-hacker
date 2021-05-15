@@ -6,30 +6,28 @@ part of 'tax_exempted_compare_page_state.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_TaxExemptedComparePageState _$_$_TaxExemptedComparePageStateFromJson(
-    Map json) {
+_$_TaxExemptedComparePageState _$_$_TaxExemptedComparePageStateFromJson(Map json) {
   return _$_TaxExemptedComparePageState(
     id: json['id'] as String?,
     taxIncludedIncome: json['taxIncludedIncome'] as int? ?? 10000000,
     taxIncludedExpenses: json['taxIncludedExpenses'] as int? ?? 0,
+    amountOfSocialInsurancePremiums: json['amountOfSocialInsurancePremiums'] as int? ?? 0,
     otherRemoval: json['otherRemoval'] as int? ?? 0,
     age: json['age'] as int? ?? 35,
-    typeOfDeclaration: _$enumDecodeNullable(
-            _$TypeOfDeclarationEnumMap, json['typeOfDeclaration']) ??
-        TypeOfDeclaration.blue65,
+    typeOfDeclaration:
+        _$enumDecodeNullable(_$TypeOfDeclarationEnumMap, json['typeOfDeclaration']) ?? TypeOfDeclaration.blue65,
   );
 }
 
-Map<String, dynamic> _$_$_TaxExemptedComparePageStateToJson(
-        _$_TaxExemptedComparePageState instance) =>
+Map<String, dynamic> _$_$_TaxExemptedComparePageStateToJson(_$_TaxExemptedComparePageState instance) =>
     <String, dynamic>{
       'id': instance.id,
       'taxIncludedIncome': instance.taxIncludedIncome,
       'taxIncludedExpenses': instance.taxIncludedExpenses,
+      'amountOfSocialInsurancePremiums': instance.amountOfSocialInsurancePremiums,
       'otherRemoval': instance.otherRemoval,
       'age': instance.age,
-      'typeOfDeclaration':
-          _$TypeOfDeclarationEnumMap[instance.typeOfDeclaration],
+      'typeOfDeclaration': _$TypeOfDeclarationEnumMap[instance.typeOfDeclaration],
     };
 
 K _$enumDecode<K, V>(
@@ -45,7 +43,7 @@ K _$enumDecode<K, V>(
   }
 
   return enumValues.entries.singleWhere(
-    (e) => e.value == source,
+    (e) => e.value == source || EnumToString.convertToString(source) == e.value,
     orElse: () {
       if (unknownValue == null) {
         throw ArgumentError(

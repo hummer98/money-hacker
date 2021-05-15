@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:money_hacker/models/income_tax.dart';
@@ -60,6 +61,9 @@ class TaxExemptedComparePageState with _$TaxExemptedComparePageState {
     /// 税込み経費
     @Default(0) int taxIncludedExpenses,
 
+    /// 社会保険料
+    @Default(0) int amountOfSocialInsurancePremiums,
+
     /// その他控除
     @Default(0) int otherRemoval,
 
@@ -86,13 +90,13 @@ extension TaxExemptedComparePageStateExtension on TaxExemptedComparePageState {
   int get baseRemoval => 480000;
 
   /// 所得税控除合計
-  int get totalRemoval => baseRemoval;
+  int get totalRemoval => baseRemoval - otherRemoval - amountOfSocialInsurancePremiums;
 
   /// 住民税基礎控除
   int get baseRemovalForResident => 430000;
 
   /// 住民税控除合計
-  int get totalRemovalForResident => baseRemovalForResident;
+  int get totalRemovalForResident => baseRemovalForResident - otherRemoval - amountOfSocialInsurancePremiums;
 
   /// 申告種別による控除額
   int get declarationRemoval => typeOfDeclaration.removal;

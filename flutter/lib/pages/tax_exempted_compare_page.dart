@@ -82,9 +82,16 @@ class TaxExemptedCompareForm extends HookWidget {
         value: state.otherRemoval,
         validators: [Validators.number, Validators.required],
       ),
+      'amountOfSocialInsurancePremiums': FormControl<int>(
+        value: state.amountOfSocialInsurancePremiums,
+        validators: [Validators.number, Validators.required],
+      ),
       'typeOfDeclaration': FormControl<TypeOfDeclaration>(
         value: state.typeOfDeclaration,
         validators: [Validators.required],
+      ),
+      'typeOfDeclarationAmount': FormControl<int>(
+        value: state.typeOfDeclaration.removal,
       ),
       'age': FormControl<int>(
         value: state.age,
@@ -133,35 +140,41 @@ class TaxExemptedCompareForm extends HookWidget {
   Widget build(BuildContext context) {
     useEffect(() {
       _form.valueChanges.listen((e) {
-        final state = TaxExemptedComparePageState.fromJson(e!);
-        _form.control('residentTax').updateValue(state.residentTax);
-        _form.control('ex-residentTax').updateValue(state.exResidentTax);
+        try {
+          final state = TaxExemptedComparePageState.fromJson(e!);
+          _form.control('typeOfDeclarationAmount').updateValue(state.typeOfDeclaration.removal);
 
-        _form.control('income').updateValue(state.income);
-        _form.control('ex-income').updateValue(state.exIncome);
+          _form.control('residentTax').updateValue(state.residentTax);
+          _form.control('ex-residentTax').updateValue(state.exResidentTax);
 
-        _form.control('taxableIncome').updateValue(state.taxableIncome);
-        _form.control('exTaxableIncome').updateValue(state.exTaxableIncome);
+          _form.control('income').updateValue(state.income);
+          _form.control('ex-income').updateValue(state.exIncome);
 
-        _form.control('incomeTaxRate').updateValue(state.incomeTaxRate.rate);
-        _form.control('ex-incomeTaxRate').updateValue(state.exIncomeTaxRate.rate);
+          _form.control('taxableIncome').updateValue(state.taxableIncome);
+          _form.control('exTaxableIncome').updateValue(state.exTaxableIncome);
 
-        _form.control('incomeTax').updateValue(state.incomeTax);
-        _form.control('exIncomeTax').updateValue(state.exIncomeTax);
+          _form.control('incomeTaxRate').updateValue(state.incomeTaxRate.rate);
+          _form.control('ex-incomeTaxRate').updateValue(state.exIncomeTaxRate.rate);
 
-        _form.control('nationalHealthInsuranceTax').updateValue(state.nationalHealthInsuranceTax);
-        _form.control('exNationalHealthInsuranceTax').updateValue(state.exNationalHealthInsuranceTax);
+          _form.control('incomeTax').updateValue(state.incomeTax);
+          _form.control('exIncomeTax').updateValue(state.exIncomeTax);
 
-        _form.control('totalTax').updateValue(state.totalTax);
-        _form.control('exTotalTax').updateValue(state.exTotalTax);
+          _form.control('nationalHealthInsuranceTax').updateValue(state.nationalHealthInsuranceTax);
+          _form.control('exNationalHealthInsuranceTax').updateValue(state.exNationalHealthInsuranceTax);
 
-        _form.control('netIncome').updateValue(state.netIncome);
-        _form.control('exNetIncome').updateValue(state.exNetIncome);
+          _form.control('totalTax').updateValue(state.totalTax);
+          _form.control('exTotalTax').updateValue(state.exTotalTax);
 
-        _form.control('vatRate').updateValue(state.vatRate);
-        _form.control('vatPaid').updateValue(state.vatPaid);
-        _form.control('vatIncome').updateValue(state.vatIncome);
-        _form.control('netIncomeDiff').updateValue(state.netIncomeDiff);
+          _form.control('netIncome').updateValue(state.netIncome);
+          _form.control('exNetIncome').updateValue(state.exNetIncome);
+
+          _form.control('vatRate').updateValue(state.vatRate);
+          _form.control('vatPaid').updateValue(state.vatPaid);
+          _form.control('vatIncome').updateValue(state.vatIncome);
+          _form.control('netIncomeDiff').updateValue(state.netIncomeDiff);
+        } catch (e) {
+          debugPrint('$e');
+        }
       });
     }, []);
 
@@ -180,8 +193,9 @@ class TaxExemptedCompareForm extends HookWidget {
             _inputRow(label: '年齢', child: _buildCurrencyTextField('age', unitLabel: '歳'), inputWidth: 80),
             _inputRow(label: '税込事業収入', child: _buildCurrencyTextField('taxIncludedIncome')),
             _inputRow(label: '税込経費', child: _buildCurrencyTextField('taxIncludedExpenses')),
+            _inputRow(label: '社会保険料', child: _buildCurrencyTextField('amountOfSocialInsurancePremiums')),
             _inputRow(label: 'その他控除', child: _buildCurrencyTextField('otherRemoval')),
-            _inputRow(label: '申告種別による控除', child: _buildCurrencyTextField('declarationRemoval', readOnly: true)),
+            _inputRow(label: '申告種別による控除', child: _buildCurrencyTextField('typeOfDeclarationAmount', readOnly: true)),
             SizedBox(height: 32),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -216,8 +230,6 @@ class TaxExemptedCompareForm extends HookWidget {
             ),
             tooltip: '= 税込事業収入 - 税込経費 - 申告種別による控除',
             inputWidth: _defaultWidth),
-        _inputRow(
-            label: '基礎控除', child: _buildCurrencyTextField('baseRemoval', readOnly: true), inputWidth: _defaultWidth),
         _inputRow(
             label: '課税所得',
             child: _buildCurrencyTextField('exTaxableIncome', readOnly: true),
@@ -264,8 +276,6 @@ class TaxExemptedCompareForm extends HookWidget {
             child: _buildCurrencyTextField('income', readOnly: true),
             tooltip: '= (税込事業収入 - 税込経費)/1.1 - 申告種別による控除\n消費税分を自動的に減算',
             inputWidth: _defaultWidth),
-        _inputRow(
-            label: '基礎控除', child: _buildCurrencyTextField('baseRemoval', readOnly: true), inputWidth: _defaultWidth),
         _inputRow(
             label: '課税所得', child: _buildCurrencyTextField('taxableIncome', readOnly: true), inputWidth: _defaultWidth),
         SizedBox(height: 24),
