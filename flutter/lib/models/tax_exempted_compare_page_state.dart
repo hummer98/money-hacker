@@ -40,6 +40,19 @@ extension TypeOfDeclarationExtension on TypeOfDeclaration {
     }
   }
 
+  String get shortTitle {
+    switch (this) {
+      case TypeOfDeclaration.white:
+        return '白色';
+      case TypeOfDeclaration.blue10:
+        return '青色(控除10万)';
+      case TypeOfDeclaration.blue55:
+        return '青色(控除55万)';
+      case TypeOfDeclaration.blue65:
+        return '青色(控除65万)';
+    }
+  }
+
   static List<TypeOfDeclaration> get allTypes {
     return [
       TypeOfDeclaration.white,
@@ -60,9 +73,6 @@ class TaxExemptedComparePageState with _$TaxExemptedComparePageState {
 
     /// 税込み経費
     @Default(0) int taxIncludedExpenses,
-
-    /// 社会保険料
-    @Default(0) int amountOfSocialInsurancePremiums,
 
     /// その他控除
     @Default(0) int otherRemoval,
@@ -90,13 +100,22 @@ extension TaxExemptedComparePageStateExtension on TaxExemptedComparePageState {
   int get baseRemoval => 480000;
 
   /// 所得税控除合計
-  int get totalRemoval => baseRemoval - otherRemoval - amountOfSocialInsurancePremiums;
+  int get totalRemoval => baseRemoval - otherRemoval - deductionsFromSocialInsurancePremiums;
+  int get exTotalRemoval => baseRemoval - otherRemoval - exDeductionsFromSocialInsurancePremiums;
+
+  /// 年金額
+  int get pensionPayments => 16610 * 12;
+
+  /// 社会保険料による控除額
+  int get deductionsFromSocialInsurancePremiums => pensionPayments + nationalHealthInsuranceTax;
+  int get exDeductionsFromSocialInsurancePremiums => pensionPayments + exNationalHealthInsuranceTax;
 
   /// 住民税基礎控除
   int get baseRemovalForResident => 430000;
 
   /// 住民税控除合計
-  int get totalRemovalForResident => baseRemovalForResident - otherRemoval - amountOfSocialInsurancePremiums;
+  int get totalRemovalForResident => baseRemovalForResident - otherRemoval - deductionsFromSocialInsurancePremiums;
+  int get exTotalRemovalForResident => baseRemovalForResident - otherRemoval - exDeductionsFromSocialInsurancePremiums;
 
   /// 申告種別による控除額
   int get declarationRemoval => typeOfDeclaration.removal;

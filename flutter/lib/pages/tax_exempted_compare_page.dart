@@ -195,7 +195,17 @@ class TaxExemptedCompareForm extends HookWidget {
             _inputRow(label: '税込経費', child: _buildCurrencyTextField('taxIncludedExpenses')),
             _inputRow(label: '社会保険料', child: _buildCurrencyTextField('amountOfSocialInsurancePremiums')),
             _inputRow(label: 'その他控除', child: _buildCurrencyTextField('otherRemoval')),
-            _inputRow(label: '申告種別による控除', child: _buildCurrencyTextField('typeOfDeclarationAmount', readOnly: true)),
+            _inputRow(
+                label: '申告種別による控除',
+                child: _buildCurrencyTextField(
+                  'typeOfDeclarationAmount',
+                  readOnly: true,
+                  prefix: ReactiveFormField<TypeOfDeclaration, TypeOfDeclaration>(
+                    formControlName: 'typeOfDeclaration',
+                    builder: (state) => UnitLabel(state.value?.shortTitle ?? ''),
+                  ),
+                ),
+                tooltip: '申告種別によって事業所得から控除される額（課税所得からではない）'),
             SizedBox(height: 32),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
