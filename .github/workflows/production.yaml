@@ -24,7 +24,7 @@ jobs:
       - run: |
           flutter config --enable-web
           flutter pub get
-          flutter build web --web-renderer html
+          flutter build web
         working-directory: ${{ env.PROCJECT_SOURCE_PATH }}
       # - name: Install dependencies
       #   run: npm install
@@ -34,3 +34,4 @@ jobs:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_MONEY_HACKER }}"
           projectId: money-hacker
+          entryPoint: "firebase"
