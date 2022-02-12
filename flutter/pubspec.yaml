@@ -1,5 +1,5 @@
 name: money_hacker
-description: A new Flutter project.
+description: お金の解像度を上げていく計算機
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
