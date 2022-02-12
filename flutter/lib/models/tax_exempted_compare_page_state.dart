@@ -84,7 +84,6 @@ class TaxExemptedComparePageState with _$TaxExemptedComparePageState {
       });
 }
 
-/// FIXME: 自動計算はプロパティでなくJSONにしたほうが良い
 extension TaxExemptedComparePageStateExtension on TaxExemptedComparePageState {
   /// 基礎控除
   int get baseRemoval => 480000;

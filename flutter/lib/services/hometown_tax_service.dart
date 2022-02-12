@@ -26,7 +26,6 @@ class HometownTaxService {
   /// 所得税率と住民税所得割額より、ふるさと納税の上限額を求めるアルゴリズム
   static int limitOfHometownTaxAmount(int incomeTaxRate, int residentTaxAmount) {
     final specialLimit = residentTaxAmount * 0.2;
-    // TODO: 復興特別税の分は?
     final incomeTaxRateWithSpecial = incomeTaxRate * 1.021;
     return specialLimit ~/ ((100 - 10 - incomeTaxRateWithSpecial) * 0.01) + 2000;
   }

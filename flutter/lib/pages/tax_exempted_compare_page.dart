@@ -68,7 +68,6 @@ class TaxExemptedCompareForm extends HookWidget {
   final double _defaultWidth = 160;
 
   static FormGroup _generateFormGroup(TaxExemptedComparePageState state) {
-    // FIXME: 自動計算セクションは計算サービスのJSONから作るほうが早い?
     return FormGroup({
       'taxIncludedIncome': FormControl<int>(
         value: state.taxIncludedIncome,
@@ -176,6 +175,7 @@ class TaxExemptedCompareForm extends HookWidget {
           debugPrint('$e');
         }
       });
+      return;
     }, []);
 
     return ReactiveForm(
@@ -188,7 +188,7 @@ class TaxExemptedCompareForm extends HookWidget {
             Center(
                 child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Headline1('免税事業者 と 課税事業者比較'),
+              child: Headline1('免税事業者 と 課税事業者の税額を比較'),
             )),
             _inputRow(
               label: '年齢',

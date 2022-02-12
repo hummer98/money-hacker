@@ -60,6 +60,7 @@ class FurusatoPage extends HookWidget {
         final state = FurusatoPageState.fromJson(e!);
         form.control('limitOfHometownTaxAmount').updateValue(state.limitOfHometownTaxAmount);
       });
+      return;
     }, []);
 
     return AppScaffold(

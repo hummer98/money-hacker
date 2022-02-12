@@ -142,7 +142,6 @@ class UnitLabel extends StatelessWidget {
     return ThemedText(
       title,
       color: color,
-      // TODO: caption
       textStyle: theme.textTheme.caption?.merge(style),
     );
   }
