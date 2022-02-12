@@ -190,12 +190,34 @@ class TaxExemptedCompareForm extends HookWidget {
               padding: const EdgeInsets.all(16.0),
               child: Headline1('免税事業者 と 課税事業者比較'),
             )),
-            _inputRow(label: '年齢', child: _buildCurrencyTextField('age', unitLabel: '歳'), inputWidth: 80),
-            _inputRow(label: '税込事業収入', child: _buildCurrencyTextField('taxIncludedIncome')),
-            _inputRow(label: '税込経費', child: _buildCurrencyTextField('taxIncludedExpenses')),
-            _inputRow(label: '社会保険料', child: _buildCurrencyTextField('amountOfSocialInsurancePremiums')),
-            _inputRow(label: 'その他控除', child: _buildCurrencyTextField('otherRemoval')),
-            _inputRow(label: '申告種別による控除', child: _buildCurrencyTextField('typeOfDeclarationAmount', readOnly: true)),
+            _inputRow(
+              label: '年齢',
+              child: _buildCurrencyTextField('age', unitLabel: '歳'),
+              inputWidth: 80,
+              tooltip: '40歳以上だと介護保険料が加算されます。',
+            ),
+            _inputRow(
+              label: '税込事業収入',
+              child: _buildCurrencyTextField('taxIncludedIncome'),
+              tooltip: '免税事業者の方は確定申告書Bの(ア)の欄を入力します。課税事業者の方は(ア)を1.1倍した金額を入力します。実際の銀行への入金額を入力と等しくなります。',
+            ),
+            _inputRow(
+              label: '税込経費',
+              child: _buildCurrencyTextField('taxIncludedExpenses'),
+              tooltip: '青色申告決算書の(32)を入力します。青色申告特別控除額を含まない金額を入力してください',
+            ),
+            _inputRow(
+              label: '社会保険料控除',
+              child: _buildCurrencyTextField('amountOfSocialInsurancePremiums'),
+              tooltip: '確定申告書Bの(13)を入力します',
+            ),
+            _inputRow(
+              label: 'その他控除',
+              child: _buildCurrencyTextField('otherRemoval'),
+              tooltip:
+                  '確定申告書Bの(14)〜(23)と(28)の合計を入力します。医療費控除・生命保険料控除・寄付金控除(ふるさと納税)・確定拠出年金(iDeco)・小規模企業共済の掛金・経営セーフティネット共済の掛金が含まれます',
+            ),
+            _inputRow(label: '青色申告控除', child: _buildCurrencyTextField('typeOfDeclarationAmount', readOnly: true)),
             SizedBox(height: 32),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -211,6 +233,15 @@ class TaxExemptedCompareForm extends HookWidget {
               child: _buildCurrencyTextField('netIncomeDiff', readOnly: true),
               inputWidth: _defaultWidth,
             ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Center(
+                child: Text(
+                  '注意事項: すべての入力値はブラウザ上で計算され、サーバー等に送信されることはありません。',
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+            )
           ],
         ),
       ),
@@ -223,7 +254,7 @@ class TaxExemptedCompareForm extends HookWidget {
         Headline5('免税事業者'),
         SizedBox(height: 8),
         _inputRow(
-            label: '所得',
+            label: '事業所得',
             child: _buildCurrencyTextField(
               'ex-income',
               readOnly: true,
@@ -250,7 +281,10 @@ class TaxExemptedCompareForm extends HookWidget {
             ),
             inputWidth: _defaultWidth),
         _inputRow(
-            label: '住民税', child: _buildCurrencyTextField('ex-residentTax', readOnly: true), inputWidth: _defaultWidth),
+          label: '住民税',
+          child: _buildCurrencyTextField('ex-residentTax', readOnly: true),
+          inputWidth: _defaultWidth,
+        ),
         _inputRow(
             label: '国民健康保険税',
             child: _buildCurrencyTextField('exNationalHealthInsuranceTax', readOnly: true),
@@ -272,47 +306,61 @@ class TaxExemptedCompareForm extends HookWidget {
         Headline5('課税事業者'),
         SizedBox(height: 8),
         _inputRow(
-            label: '所得',
+            label: '事業所得',
             child: _buildCurrencyTextField('income', readOnly: true),
-            tooltip: '= (税込事業収入 - 税込経費)/1.1 - 申告種別による控除\n消費税分を自動的に減算',
+            tooltip: '= (税込事業収入 - 税込経費)/1.1 - 申告種別による控除\n ※消費税分は減算して計算',
             inputWidth: _defaultWidth),
         _inputRow(
-            label: '課税所得', child: _buildCurrencyTextField('taxableIncome', readOnly: true), inputWidth: _defaultWidth),
+          label: '課税所得',
+          child: _buildCurrencyTextField('taxableIncome', readOnly: true),
+          inputWidth: _defaultWidth,
+          tooltip: '実際に課税される所得です。\n\n課税所得 = 所得 - 社会保険料控除 - その他控除 - 基礎控除',
+        ),
         SizedBox(height: 24),
         _inputRow(
-            label: '所得税',
-            child: _buildCurrencyTextField(
-              'incomeTax',
-              readOnly: true,
-              prefix: ReactiveFormField<int, int>(
-                formControlName: 'incomeTaxRate',
-                builder: (state) => Tooltip(
-                  message: '所得税率',
-                  child: UnitLabel('${state.value}%'),
-                ),
+          label: '所得税',
+          child: _buildCurrencyTextField(
+            'incomeTax',
+            readOnly: true,
+            prefix: ReactiveFormField<int, int>(
+              formControlName: 'incomeTaxRate',
+              builder: (state) => Tooltip(
+                message: '所得税率',
+                child: UnitLabel('${state.value}%'),
               ),
             ),
-            inputWidth: _defaultWidth),
+          ),
+          inputWidth: _defaultWidth,
+          tooltip: '左の%が所得税率。 所得税額 = 課税所得 * 所得税率 * 102.1%(復興特別加算税2.1%)',
+        ),
         _inputRow(
-            label: '住民税', child: _buildCurrencyTextField('residentTax', readOnly: true), inputWidth: _defaultWidth),
+          label: '住民税',
+          child: _buildCurrencyTextField('residentTax', readOnly: true),
+          inputWidth: _defaultWidth,
+          tooltip: '基礎控除を43万円にしただけの簡易計算です。ふるさと納税の減額分については考慮されません。市区町村によっては1000円程度上下します。',
+        ),
         _inputRow(
-            label: '国民健康保険税',
-            child: _buildCurrencyTextField('nationalHealthInsuranceTax', readOnly: true),
-            inputWidth: _defaultWidth),
+          label: '国民健康保険税',
+          child: _buildCurrencyTextField('nationalHealthInsuranceTax', readOnly: true),
+          inputWidth: _defaultWidth,
+          tooltip: '市区町村によって若干上下します。この計算のモデルは東京都中野区です',
+        ),
         _inputRow(
-            label: '消費税支払額',
-            child: _buildCurrencyTextField(
-              'vatPaid',
-              readOnly: true,
-              prefix: ReactiveFormField<int, int>(
-                formControlName: 'vatRate',
-                builder: (state) => Tooltip(
-                  message: '簡易課税率',
-                  child: UnitLabel('${state.value}%'),
-                ),
+          label: '消費税支払額',
+          child: _buildCurrencyTextField(
+            'vatPaid',
+            readOnly: true,
+            prefix: ReactiveFormField<int, int>(
+              formControlName: 'vatRate',
+              builder: (state) => Tooltip(
+                message: '簡易課税率',
+                child: UnitLabel('${state.value}%'),
               ),
             ),
-            inputWidth: _defaultWidth),
+          ),
+          inputWidth: _defaultWidth,
+          tooltip: '簡易課税事業者第5種として50%の簡易課税率として計算します',
+        ),
         SizedBox(height: 16),
         _inputRow(label: '租税合計', child: _buildCurrencyTextField('totalTax', readOnly: true), inputWidth: _defaultWidth),
         // _inputRow(label: '消費税益税', child: _buildCurrencyTextField('vatIncome', readOnly: true), inputWidth: _defaultWidth),
