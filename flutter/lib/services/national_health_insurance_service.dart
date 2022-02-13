@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:money_hacker/models/income_tax.dart';
+
 /// 地方自治体別の設定
 class LocalAuthority {
   const LocalAuthority(
@@ -28,9 +30,10 @@ class NationalHealthInsuranceData {
   /// 課税所得を元に国民健康保険税を算出する
   int amountOfTax(int taxableIncome, int age) {
     if (age >= 40 && 65 > age) {
-      return base.amountOfTax(taxableIncome) + support.amountOfTax(taxableIncome) + care.amountOfTax(taxableIncome);
+      return floor(
+          base.amountOfTax(taxableIncome) + support.amountOfTax(taxableIncome) + care.amountOfTax(taxableIncome), 100);
     } else {
-      return base.amountOfTax(taxableIncome) + support.amountOfTax(taxableIncome);
+      return floor(base.amountOfTax(taxableIncome) + support.amountOfTax(taxableIncome), 100);
     }
   }
 }

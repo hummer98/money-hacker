@@ -12,8 +12,7 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
-TaxExemptedComparePageState _$TaxExemptedComparePageStateFromJson(
-    Map<String, dynamic> json) {
+TaxExemptedComparePageState _$TaxExemptedComparePageStateFromJson(Map<String, dynamic> json) {
   return _TaxExemptedComparePageState.fromJson(json);
 }
 
@@ -58,7 +57,7 @@ mixin _$TaxExemptedComparePageState {
   /// 税込み経費
   int get taxIncludedExpenses => throw _privateConstructorUsedError;
 
-  /// 社会保険料
+  /// 社会保険料控除
   int get amountOfSocialInsurancePremiums => throw _privateConstructorUsedError;
 
   /// その他控除
@@ -72,15 +71,13 @@ mixin _$TaxExemptedComparePageState {
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $TaxExemptedComparePageStateCopyWith<TaxExemptedComparePageState>
-      get copyWith => throw _privateConstructorUsedError;
+  $TaxExemptedComparePageStateCopyWith<TaxExemptedComparePageState> get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $TaxExemptedComparePageStateCopyWith<$Res> {
   factory $TaxExemptedComparePageStateCopyWith(
-          TaxExemptedComparePageState value,
-          $Res Function(TaxExemptedComparePageState) then) =
+          TaxExemptedComparePageState value, $Res Function(TaxExemptedComparePageState) then) =
       _$TaxExemptedComparePageStateCopyWithImpl<$Res>;
   $Res call(
       {String? id,
@@ -93,8 +90,7 @@ abstract class $TaxExemptedComparePageStateCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$TaxExemptedComparePageStateCopyWithImpl<$Res>
-    implements $TaxExemptedComparePageStateCopyWith<$Res> {
+class _$TaxExemptedComparePageStateCopyWithImpl<$Res> implements $TaxExemptedComparePageStateCopyWith<$Res> {
   _$TaxExemptedComparePageStateCopyWithImpl(this._value, this._then);
 
   final TaxExemptedComparePageState _value;
@@ -124,8 +120,7 @@ class _$TaxExemptedComparePageStateCopyWithImpl<$Res>
           ? _value.taxIncludedExpenses
           : taxIncludedExpenses // ignore: cast_nullable_to_non_nullable
               as int,
-      amountOfSocialInsurancePremiums: amountOfSocialInsurancePremiums ==
-              freezed
+      amountOfSocialInsurancePremiums: amountOfSocialInsurancePremiums == freezed
           ? _value.amountOfSocialInsurancePremiums
           : amountOfSocialInsurancePremiums // ignore: cast_nullable_to_non_nullable
               as int,
@@ -146,11 +141,9 @@ class _$TaxExemptedComparePageStateCopyWithImpl<$Res>
 }
 
 /// @nodoc
-abstract class _$TaxExemptedComparePageStateCopyWith<$Res>
-    implements $TaxExemptedComparePageStateCopyWith<$Res> {
+abstract class _$TaxExemptedComparePageStateCopyWith<$Res> implements $TaxExemptedComparePageStateCopyWith<$Res> {
   factory _$TaxExemptedComparePageStateCopyWith(
-          _TaxExemptedComparePageState value,
-          $Res Function(_TaxExemptedComparePageState) then) =
+          _TaxExemptedComparePageState value, $Res Function(_TaxExemptedComparePageState) then) =
       __$TaxExemptedComparePageStateCopyWithImpl<$Res>;
   @override
   $Res call(
@@ -164,17 +157,14 @@ abstract class _$TaxExemptedComparePageStateCopyWith<$Res>
 }
 
 /// @nodoc
-class __$TaxExemptedComparePageStateCopyWithImpl<$Res>
-    extends _$TaxExemptedComparePageStateCopyWithImpl<$Res>
+class __$TaxExemptedComparePageStateCopyWithImpl<$Res> extends _$TaxExemptedComparePageStateCopyWithImpl<$Res>
     implements _$TaxExemptedComparePageStateCopyWith<$Res> {
   __$TaxExemptedComparePageStateCopyWithImpl(
-      _TaxExemptedComparePageState _value,
-      $Res Function(_TaxExemptedComparePageState) _then)
+      _TaxExemptedComparePageState _value, $Res Function(_TaxExemptedComparePageState) _then)
       : super(_value, (v) => _then(v as _TaxExemptedComparePageState));
 
   @override
-  _TaxExemptedComparePageState get _value =>
-      super._value as _TaxExemptedComparePageState;
+  _TaxExemptedComparePageState get _value => super._value as _TaxExemptedComparePageState;
 
   @override
   $Res call({
@@ -199,8 +189,7 @@ class __$TaxExemptedComparePageStateCopyWithImpl<$Res>
           ? _value.taxIncludedExpenses
           : taxIncludedExpenses // ignore: cast_nullable_to_non_nullable
               as int,
-      amountOfSocialInsurancePremiums: amountOfSocialInsurancePremiums ==
-              freezed
+      amountOfSocialInsurancePremiums: amountOfSocialInsurancePremiums == freezed
           ? _value.amountOfSocialInsurancePremiums
           : amountOfSocialInsurancePremiums // ignore: cast_nullable_to_non_nullable
               as int,
@@ -222,9 +211,7 @@ class __$TaxExemptedComparePageStateCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_TaxExemptedComparePageState
-    with DiagnosticableTreeMixin
-    implements _TaxExemptedComparePageState {
+class _$_TaxExemptedComparePageState with DiagnosticableTreeMixin implements _TaxExemptedComparePageState {
   const _$_TaxExemptedComparePageState(
       {this.id,
       this.taxIncludedIncome = 10000000,
@@ -283,8 +270,7 @@ class _$_TaxExemptedComparePageState
       ..add(DiagnosticsProperty('id', id))
       ..add(DiagnosticsProperty('taxIncludedIncome', taxIncludedIncome))
       ..add(DiagnosticsProperty('taxIncludedExpenses', taxIncludedExpenses))
-      ..add(DiagnosticsProperty(
-          'amountOfSocialInsurancePremiums', amountOfSocialInsurancePremiums))
+      ..add(DiagnosticsProperty('amountOfSocialInsurancePremiums', amountOfSocialInsurancePremiums))
       ..add(DiagnosticsProperty('otherRemoval', otherRemoval))
       ..add(DiagnosticsProperty('age', age))
       ..add(DiagnosticsProperty('typeOfDeclaration', typeOfDeclaration));
@@ -294,27 +280,19 @@ class _$_TaxExemptedComparePageState
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other is _TaxExemptedComparePageState &&
-            (identical(other.id, id) ||
-                const DeepCollectionEquality().equals(other.id, id)) &&
+            (identical(other.id, id) || const DeepCollectionEquality().equals(other.id, id)) &&
             (identical(other.taxIncludedIncome, taxIncludedIncome) ||
-                const DeepCollectionEquality()
-                    .equals(other.taxIncludedIncome, taxIncludedIncome)) &&
+                const DeepCollectionEquality().equals(other.taxIncludedIncome, taxIncludedIncome)) &&
             (identical(other.taxIncludedExpenses, taxIncludedExpenses) ||
+                const DeepCollectionEquality().equals(other.taxIncludedExpenses, taxIncludedExpenses)) &&
+            (identical(other.amountOfSocialInsurancePremiums, amountOfSocialInsurancePremiums) ||
                 const DeepCollectionEquality()
-                    .equals(other.taxIncludedExpenses, taxIncludedExpenses)) &&
-            (identical(other.amountOfSocialInsurancePremiums,
-                    amountOfSocialInsurancePremiums) ||
-                const DeepCollectionEquality().equals(
-                    other.amountOfSocialInsurancePremiums,
-                    amountOfSocialInsurancePremiums)) &&
+                    .equals(other.amountOfSocialInsurancePremiums, amountOfSocialInsurancePremiums)) &&
             (identical(other.otherRemoval, otherRemoval) ||
-                const DeepCollectionEquality()
-                    .equals(other.otherRemoval, otherRemoval)) &&
-            (identical(other.age, age) ||
-                const DeepCollectionEquality().equals(other.age, age)) &&
+                const DeepCollectionEquality().equals(other.otherRemoval, otherRemoval)) &&
+            (identical(other.age, age) || const DeepCollectionEquality().equals(other.age, age)) &&
             (identical(other.typeOfDeclaration, typeOfDeclaration) ||
-                const DeepCollectionEquality()
-                    .equals(other.typeOfDeclaration, typeOfDeclaration)));
+                const DeepCollectionEquality().equals(other.typeOfDeclaration, typeOfDeclaration)));
   }
 
   @override
@@ -330,9 +308,8 @@ class _$_TaxExemptedComparePageState
 
   @JsonKey(ignore: true)
   @override
-  _$TaxExemptedComparePageStateCopyWith<_TaxExemptedComparePageState>
-      get copyWith => __$TaxExemptedComparePageStateCopyWithImpl<
-          _TaxExemptedComparePageState>(this, _$identity);
+  _$TaxExemptedComparePageStateCopyWith<_TaxExemptedComparePageState> get copyWith =>
+      __$TaxExemptedComparePageStateCopyWithImpl<_TaxExemptedComparePageState>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
@@ -340,8 +317,7 @@ class _$_TaxExemptedComparePageState
   }
 }
 
-abstract class _TaxExemptedComparePageState
-    implements TaxExemptedComparePageState {
+abstract class _TaxExemptedComparePageState implements TaxExemptedComparePageState {
   const factory _TaxExemptedComparePageState(
       {String? id,
       int taxIncludedIncome,
@@ -351,8 +327,7 @@ abstract class _TaxExemptedComparePageState
       int age,
       TypeOfDeclaration typeOfDeclaration}) = _$_TaxExemptedComparePageState;
 
-  factory _TaxExemptedComparePageState.fromJson(Map<String, dynamic> json) =
-      _$_TaxExemptedComparePageState.fromJson;
+  factory _TaxExemptedComparePageState.fromJson(Map<String, dynamic> json) = _$_TaxExemptedComparePageState.fromJson;
 
   @override
   String? get id => throw _privateConstructorUsedError;
@@ -382,6 +357,6 @@ abstract class _TaxExemptedComparePageState
   TypeOfDeclaration get typeOfDeclaration => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
-  _$TaxExemptedComparePageStateCopyWith<_TaxExemptedComparePageState>
-      get copyWith => throw _privateConstructorUsedError;
+  _$TaxExemptedComparePageStateCopyWith<_TaxExemptedComparePageState> get copyWith =>
+      throw _privateConstructorUsedError;
 }

@@ -64,6 +64,7 @@ class FurusatoPage extends HookWidget {
     }, []);
 
     return AppScaffold(
+      title: Text('事業所得者向け ふるさと納税計算機'),
       child: ReactiveForm(
         formGroup: form,
         child: SingleChildScrollView(
@@ -71,7 +72,6 @@ class FurusatoPage extends HookWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Headline1('ふるさと納税'),
               _inputRow(label: '所得税率', child: _incomeTaxField(context, 'incomeTaxRate'), inputWidth: 100),
               _inputRow(label: '住民税均等割額', child: _residentTaxAmountField('residentTaxAmount')),
               SizedBox(height: 64),

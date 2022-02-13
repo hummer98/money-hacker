@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:money_hacker/app_router.dart';
 import 'package:money_hacker/models/income_tax.dart';
 import 'package:money_hacker/models/tax_exempted_compare_page_state.dart';
+import 'package:money_hacker/pages/app_page.dart';
 import 'package:money_hacker/pages/common/app_scaffold.dart';
 import 'package:money_hacker/utils/currency_value_accessor.dart';
 import 'package:money_hacker/widgets/text_widgets.dart';
@@ -37,19 +38,30 @@ class TaxExemptedComparePage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
+        title: AppBarText('免税事業者 と 課税事業者の税額を比較'),
         child: FutureBuilder<TaxExemptedComparePageState>(
-      future: path.id == null
-          ? Future.value(TaxExemptedComparePageState())
-          : TaxExemptedComparePageStateExtension.read(path.id!),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          final state = snapshot.data!;
-          return TaxExemptedCompareForm(state: state);
-        } else {
-          return Center(child: CircularProgressIndicator());
-        }
-      },
-    ));
+          future: path.id == null
+              ? Future.value(TaxExemptedComparePageState())
+              : TaxExemptedComparePageStateExtension.read(path.id!),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              final state = snapshot.data!;
+              return SingleChildScrollView(
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: ConstrainedBox(
+                      constraints: BoxConstraints(minWidth: App.minWidth, maxWidth: App.maxWidth),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: TaxExemptedCompareForm(state: state),
+                      )),
+                ),
+              );
+            } else {
+              return Center(child: CircularProgressIndicator());
+            }
+          },
+        ));
   }
 }
 
@@ -185,11 +197,6 @@ class TaxExemptedCompareForm extends HookWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Center(
-                child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Headline1('免税事業者 と 課税事業者の税額を比較'),
-            )),
             _inputRow(
               label: '年齢',
               child: _buildCurrencyTextField('age', unitLabel: '歳'),
@@ -392,12 +399,24 @@ class TaxExemptedCompareForm extends HookWidget {
 
   Widget _buildCurrencyTextField(String name,
       {String? label, bool readOnly = false, String unitLabel = '円', Widget? prefix}) {
+    final _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      if (!_focusNode.hasFocus && _form.value[name] == null) {
+        _form.patchValue({name: 0});
+      }
+    });
     return ReactiveTextField<num>(
+      focusNode: _focusNode,
       formControlName: name,
       textAlign: TextAlign.end,
       valueAccessor: CurrencyValueAccessor(),
       inputFormatters: [ThousandsFormatter()],
       readOnly: readOnly,
+      onTap: () {
+        if (!_form.controls[name]!.dirty) {
+          _form.patchValue({name: null});
+        }
+      },
       decoration: InputDecoration(
         isDense: true,
         border: const OutlineInputBorder(),

@@ -89,13 +89,13 @@ extension TaxExemptedComparePageStateExtension on TaxExemptedComparePageState {
   int get baseRemoval => 480000;
 
   /// 所得税控除合計
-  int get totalRemoval => baseRemoval - otherRemoval - amountOfSocialInsurancePremiums;
+  int get totalRemoval => baseRemoval + otherRemoval + amountOfSocialInsurancePremiums;
 
   /// 住民税基礎控除
   int get baseRemovalForResident => 430000;
 
   /// 住民税控除合計
-  int get totalRemovalForResident => baseRemovalForResident - otherRemoval - amountOfSocialInsurancePremiums;
+  int get totalRemovalForResident => baseRemovalForResident + otherRemoval + amountOfSocialInsurancePremiums;
 
   /// 申告種別による控除額
   int get declarationRemoval => typeOfDeclaration.removal;
@@ -103,14 +103,16 @@ extension TaxExemptedComparePageStateExtension on TaxExemptedComparePageState {
   /// 課税事業者売上額
   int get salesAmount => taxIncludedIncome ~/ 1.1;
 
-  /// 課税事業者所得
+  /// 課税事業者事業所得
   int get income => max(0, (salesAmount - (taxIncludedExpenses / 1.1)).toInt() - declarationRemoval);
 
-  /// 免税事業者所得
+  /// 免税事業者事業所得
   int get exIncome => max(0, taxIncludedIncome - taxIncludedExpenses - declarationRemoval);
 
-  /// 所得税課税所得
+  /// 課税事業者・所得税課税所得
   int get taxableIncome => max(0, income - totalRemoval);
+
+  /// 免税事業者・所得税課税所得
   int get exTaxableIncome => max(0, exIncome - totalRemoval);
 
   /// 住民税課税所得
@@ -122,8 +124,8 @@ extension TaxExemptedComparePageStateExtension on TaxExemptedComparePageState {
   int get exIncomeTax => IncomeTax.taxAmountWithSpecial(exTaxableIncome);
 
   /// 住民税
-  int get residentTax => (taxableIncomeForResidentTax * 0.1).toInt();
-  int get exResidentTax => (exTaxableIncomeForResidentTax * 0.1).toInt();
+  int get residentTax => floor((taxableIncomeForResidentTax * 0.1).toInt(), 100);
+  int get exResidentTax => floor((exTaxableIncomeForResidentTax * 0.1).toInt(), 100);
 
   /// 国民健康保険税
   int get nationalHealthInsuranceTax => NationalHealthInsuranceService().amountOfTax(income, age);
@@ -150,8 +152,8 @@ extension TaxExemptedComparePageStateExtension on TaxExemptedComparePageState {
   int get netIncomeDiff => netIncome - exNetIncome;
 
   /// 所得税率表
-  IncomeTaxRate get incomeTaxRate => IncomeTax.withIncome(income);
-  IncomeTaxRate get exIncomeTaxRate => IncomeTax.withIncome(exIncome);
+  IncomeTaxRate get incomeTaxRate => IncomeTax.withIncome(taxableIncome);
+  IncomeTaxRate get exIncomeTaxRate => IncomeTax.withIncome(exTaxableIncome);
 
   /// 租税差額
   int get totalTaxDiff => totalTax - exTotalTax;

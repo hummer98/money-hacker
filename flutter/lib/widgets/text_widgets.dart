@@ -20,6 +20,22 @@ class ThemedText extends StatelessWidget {
   }
 }
 
+class AppBarText extends StatelessWidget {
+  const AppBarText(this.title, {this.color});
+  final String title;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return ThemedText(
+      title,
+      color: color,
+      textStyle: theme.textTheme.headline5!.copyWith(fontWeight: FontWeight.bold),
+    );
+  }
+}
+
 /// Headline -> color: onPrimary
 class Headline1 extends StatelessWidget {
   const Headline1(this.title, {this.style, this.color});

@@ -19,6 +19,7 @@ class TopPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
+      title: Text('MONEY HACKER'),
       child: Column(
         children: [
           Padding(

@@ -2,7 +2,7 @@ import 'package:intl/intl.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 class CurrencyValueAccessor extends ControlValueAccessor<num, String> {
-  final formatter = NumberFormat('#,##0', 'ja_JP');
+  final formatter = NumberFormat('#,###', 'ja_JP');
 
   @override
   String? modelToViewValue(num? modelValue) {
@@ -11,6 +11,10 @@ class CurrencyValueAccessor extends ControlValueAccessor<num, String> {
 
   @override
   num? viewToModelValue(String? viewValue) {
-    return (viewValue == '' || viewValue == null) ? null : formatter.parse(viewValue);
+    try {
+      return formatter.parse(viewValue!);
+    } catch (e) {
+      return 0;
+    }
   }
 }
